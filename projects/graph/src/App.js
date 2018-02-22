@@ -3,8 +3,8 @@ import { Graph } from './graph';
 import './App.css';
 
 // !!! IMPLEMENT ME
-// const canvasWidth = 
-// const canvasHeight = 
+const canvasWidth = 1920;
+const canvasHeight = 1080;
 
 /**
  * GraphView
@@ -28,28 +28,38 @@ class GraphView extends Component {
    * Render the canvas
    */
   updateCanvas() {
+    const graph = new Graph();
+    graph.randomize(12, 3, 145, 0.4);
+    const verticies = graph.vertexes;
     let canvas = this.refs.canvas;
     let ctx = canvas.getContext('2d');
-    
-    // Clear it
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // !!! IMPLEMENT ME
-    // compute connected components
-    // draw edges
-    // draw verts
-    // draw vert values (labels)
+    // Clear it
+    ctx.fillStyle = '#D8A08F';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = '#8B4513';
+
+    verticies.map(vertex => {
+      ctx.beginPath();
+      ctx.arc(vertex.pos.x, vertex.pos.y, 10, 0, 2 * Math.PI, false);
+      ctx.fill();
+      vertex.edges.map(edge => {
+        const vertexPair = edge.destination;
+        ctx.beginPath();
+        ctx.moveTo(vertex.pos.x, vertex.pos.y);
+        ctx.lineTo(vertexPair.pos.x, vertexPair.pos.y);
+        ctx.stroke();
+      });
+    });
   }
-  
+
   /**
    * Render
    */
   render() {
-    return <canvas ref="canvas" width={canvasWidth} height={canvasHeight}></canvas>;
+    return <canvas ref="canvas" width={canvasWidth} height={canvasHeight} />;
   }
 }
-
 
 /**
  * App
@@ -69,7 +79,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <GraphView graph={this.state.graph}></GraphView>
+        <GraphView graph={this.state.graph} />
       </div>
     );
   }
